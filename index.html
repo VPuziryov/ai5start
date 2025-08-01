@@ -20,9 +20,23 @@
     fbq('track', 'PageView');
 
     window.addEventListener('load', function () {
+      // событие ViewContent через 7 секунд
       setTimeout(function () {
         fbq('trackCustom', 'ViewContent_ai5_7s');
       }, 7000);
+
+      // отложенный автозапуск видео через 6 секунд
+      setTimeout(function () {
+        const video = document.getElementById('course-video');
+        if (video && video.paused) {
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(function(error) {
+              console.log("Autoplay prevented:", error);
+            });
+          }
+        }
+      }, 6000);
     });
   </script>
   <noscript>
@@ -105,7 +119,7 @@
     </div>
 
     <div class="video-wrapper">
-      <video controls autoplay muted playsinline poster="Course%20cover%20pix.png">
+      <video id="course-video" controls muted playsinline poster="Course%20cover%20pix.png">
         <source src="AIcourseStart.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео.
       </video>
