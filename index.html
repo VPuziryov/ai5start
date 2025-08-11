@@ -26,17 +26,24 @@
   <!-- End Facebook Pixel -->
 
   <style>
+    :root{
+      --blue:#3aa0d1;
+      --blue-dark:#2a8ab7;
+      --bg:#f4f4f4;
+      --text:#222;
+    }
+    *{box-sizing:border-box}
     body {
       margin: 0;
       padding: 0;
-      font-family: system-ui, sans-serif;
-      background: #f4f4f4;
-      color: #222;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
     .container {
       max-width: 720px;
       margin: 40px auto;
-      background: white;
+      background: #fff;
       padding: 30px;
       border-radius: 16px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.08);
@@ -46,7 +53,7 @@
       margin-bottom: 0.5em;
     }
     .subtitle {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: #555;
       margin-bottom: 1.5em;
     }
@@ -74,35 +81,80 @@
       cursor: pointer;
       display: none;
     }
-    ul {
-      padding-left: 1.2em;
+    ul { padding-left: 1.2em; }
+    li { margin-bottom: 0.7em; }
+
+    /* PRICE BLOCK */
+    .offer{
+      margin-top:24px;
+      background:#e7f7ff;
+      border:1px solid #d1eefc;
+      border-radius:12px;
+      padding:18px;
+      display:flex;
+      align-items:center;
+      gap:18px;
+      flex-wrap:wrap;
     }
-    li {
-      margin-bottom: 0.7em;
+    .price{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
     }
-    .bonus {
-      background: #e7f7ff;
-      border-left: 4px solid #3aa0d1;
-      padding: 16px;
-      margin-top: 2em;
-      border-radius: 12px;
+    .price-old{
+      color:#888;
+      text-decoration:line-through;
+      font-size:1.1rem;
     }
+    .price-new{
+      color:#0b6ea8;
+      font-weight:700;
+      font-size:1.6rem;
+      background:#ffffffb3;
+      padding:4px 10px;
+      border-radius:8px;
+    }
+    .badge{
+      background:#0bbf77;
+      color:#fff;
+      font-weight:600;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:0.9rem;
+    }
+    .timer{
+      margin-left:auto;
+      font-variant-numeric:tabular-nums;
+      font-weight:700;
+      color:#0b6ea8;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .timer small{display:block;color:#2f6f8e;font-weight:500}
     .cta {
-      margin-top: 2.5em;
+      margin-top: 18px;
       text-align: center;
     }
     .cta a {
-      background: #3aa0d1;
-      color: white;
+      background: var(--blue);
+      color: #fff;
       text-decoration: none;
       padding: 14px 28px;
       border-radius: 8px;
       font-size: 1rem;
       display: inline-block;
-      transition: background 0.3s;
+      transition: background .3s, transform .05s;
     }
-    .cta a:hover {
-      background: #2a8ab7;
+    .cta a:hover { background: var(--blue-dark); }
+    .cta a:active { transform: translateY(1px); }
+
+    .bonus {
+      background: #eefbf4;
+      border-left: 4px solid #0bbf77;
+      padding: 16px;
+      margin-top: 1.5em;
+      border-radius: 12px;
     }
   </style>
 </head>
@@ -121,6 +173,19 @@
       <button id="unmute-btn" onclick="unmuteVideo()">🔊 Включить звук</button>
     </div>
 
+    <!-- OFFER / PRICE + TIMER -->
+    <div class="offer" id="offer">
+      <div class="price">
+        <span class="price-old" id="price-old">17,00 €</span>
+        <span class="price-new" id="price-new">8,90 €</span>
+        <span class="badge" id="badge">−48%</span>
+      </div>
+      <div class="timer" id="timer">
+        ⏳ <span id="timeleft">48:00:00</span>
+        <small>до конца акции</small>
+      </div>
+    </div>
+
     <h2>Что вы узнаете:</h2>
     <ul>
       <li>⚙️ 5 реальных сценариев, где ИИ-ассистент заменяет помощника, копирайтера или маркетолога</li>
@@ -137,58 +202,107 @@
     </div>
 
     <div class="cta">
-      <a href="https://puziryov.com/use/bye-ai5-course/" onclick="fbq('trackCustom', 'Checkout_ai5')">
+      <a id="cta-btn" href="https://puziryov.com/use/bye-ai5-course/" onclick="fbq('trackCustom','Checkout_ai5')">
         Получить доступ за 8,90&nbsp;€
       </a>
     </div>
   </div>
 
   <script>
+    // --- 7s ViewContent marker ---
+    setTimeout(function(){
+      fbq('trackCustom','ViewContent_ai5_7s');
+    },7000);
+
+    // --- Video helpers ---
     window.addEventListener('load', function () {
       const video = document.getElementById('course-video');
       const btn = document.getElementById('unmute-btn');
 
-      // Событие Facebook через 7 секунд
-      setTimeout(function () {
-        fbq('trackCustom', 'ViewContent_ai5_7s');
-      }, 7000);
+      // показать кнопку включения звука через 3с
+      setTimeout(function(){ if(btn) btn.style.display='block'; },3000);
 
-      // Показать кнопку включения звука через 3 секунды
-      setTimeout(function () {
-        if (btn) btn.style.display = 'block';
-      }, 3000);
-
-      // Автовоспроизведение видео без звука через 6 секунд
-      setTimeout(function () {
+      // попытка автоплея через 6с
+      setTimeout(function(){
         if (video && video.paused) {
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(function (error) {
-              console.log("Autoplay prevented:", error);
-            });
-          }
+          const p = video.play();
+          if (p && p.catch) p.catch(()=>{});
         }
-
-        // Удаляем кнопку, если пользователь включает звук вручную
         if (video) {
           video.addEventListener('volumechange', function () {
-            if (!video.muted) {
-              btn.style.display = 'none';
-            }
+            if (!video.muted && btn) btn.style.display = 'none';
           });
         }
-      }, 6000);
+      },6000);
     });
 
-    function unmuteVideo() {
-      const video = document.getElementById('course-video');
-      const btn = document.getElementById('unmute-btn');
-      if (video) {
-        video.muted = false;
-        video.play();
-        if (btn) btn.style.display = 'none';
-      }
+    function unmuteVideo(){
+      const v=document.getElementById('course-video');
+      const b=document.getElementById('unmute-btn');
+      if(!v) return;
+      v.muted=false; v.play();
+      if(b) b.style.display='none';
     }
+
+    // --- Countdown (48h per user) ---
+    (function(){
+      const KEY='ai5_offer_deadline_v1';
+      const HOURS=48; // длительность акции для пользователя
+      const ALT_LINK_AFTER_EXPIRY = null; // <- вставь сюда линк Stripe с базовой ценой, когда будет готов
+      const BASE_PRICE_LABEL = 'Получить доступ'; // подпись после истечения, если новый линк не задан
+
+      const now = Date.now();
+      let deadline = localStorage.getItem(KEY);
+      if(!deadline){
+        deadline = (now + HOURS*60*60*1000).toString();
+        localStorage.setItem(KEY, deadline);
+      }
+      deadline = parseInt(deadline,10);
+
+      const $timer = document.getElementById('timeleft');
+      const $timerWrap = document.getElementById('timer');
+      const $old = document.getElementById('price-old');
+      const $new = document.getElementById('price-new');
+      const $badge = document.getElementById('badge');
+      const $cta = document.getElementById('cta-btn');
+
+      let expiredSent = false;
+
+      function pad(n){ return n<10?('0'+n):n; }
+      function render(){
+        const diff = deadline - Date.now();
+        if(diff <= 0){
+          if(!expiredSent){
+            fbq('trackCustom','Offer_Expired_ai5');
+            sessionStorage.setItem('Offer_Expired_ai5_sent','1');
+            expiredSent = true;
+          }
+          // визуально завершаем акцию
+          if($timerWrap){ $timerWrap.innerHTML = '⏰ Акция завершена'; }
+          if($old) $old.style.display='none';
+          if($badge) $badge.style.display='none';
+          // при желании меняем текст/ссылку
+          if(ALT_LINK_AFTER_EXPIRY && $cta){
+            $cta.href = ALT_LINK_AFTER_EXPIRY;
+            $cta.textContent = 'Получить доступ за 14,90 €';
+          }else if($cta){
+            $cta.textContent = BASE_PRICE_LABEL;
+          }
+          return;
+        }
+        const s = Math.floor(diff/1000);
+        const hh = pad(Math.floor(s/3600));
+        const mm = pad(Math.floor((s%3600)/60));
+        const ss = pad(s%60);
+        if($timer) $timer.textContent = `${hh}:${mm}:${ss}`;
+      }
+
+      // не дублируем событие в сессии
+      if(sessionStorage.getItem('Offer_Expired_ai5_sent')) expiredSent = true;
+
+      render();
+      setInterval(render, 1000);
+    })();
   </script>
 </body>
 </html>
