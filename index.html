@@ -60,17 +60,21 @@
     ul { padding-left: 1.2em; }
     li { margin-bottom: 0.7em; }
 
-    .offer{ margin-top:24px; background:#e7f7ff; border:1px solid #d1eefc;
+    .offer{
+      margin-top:24px; background:#e7f7ff; border:1px solid #d1eefc;
       border-radius:12px; padding:18px; display:flex; align-items:center;
-      gap:18px; flex-wrap:wrap; }
+      gap:18px; flex-wrap:wrap;
+    }
     .price{ display:flex; align-items:baseline; gap:10px; }
     .price-old{ color:#888; text-decoration:line-through; font-size:1.1rem; }
     .price-new{ color:#0b6ea8; font-weight:700; font-size:1.6rem;
       background:#ffffffb3; padding:4px 10px; border-radius:8px; }
     .badge{ background:#0bbf77; color:#fff; font-weight:600; padding:4px 10px;
       border-radius:999px; font-size:0.9rem; }
-    .timer{ margin-left:auto; font-variant-numeric:tabular-nums; font-weight:700;
-      color:#0b6ea8; display:flex; align-items:center; gap:8px; }
+    .timer{
+      margin-left:auto; font-variant-numeric:tabular-nums; font-weight:700;
+      color:#0b6ea8; display:flex; align-items:center; gap:8px;
+    }
     .timer small{display:block;color:#2f6f8e;font-weight:500}
     .cta { margin-top: 18px; text-align: center; }
     .cta a {
@@ -85,9 +89,24 @@
       background: #eefbf4; border-left: 4px solid #0bbf77; padding: 16px;
       margin-top: 1.5em; border-radius: 12px;
     }
-    .promo-hint {
-      margin-top:16px; font-size:0.95rem; color:#444; text-align:center;
+
+    /* CHANGES: компактная строка статуса + микро-подсказка */
+    .offer-status{
+      display:flex; align-items:center; gap:8px; margin-left:auto;
+      color:#2f6f8e; font-weight:600; font-size:.95rem;
     }
+    .offer-note{
+      width:100%;
+      font-size:.9rem; color:#3b6477;
+      display:none;
+    }
+    .offer-note code{
+      background:#fff; border:1px dashed #b6dbee; padding:2px 6px; border-radius:6px;
+      font-size:.85rem;
+    }
+
+    /* старый нижний блок больше не нужен, но оставим на всякий случай */
+    .promo-hint { display:none; }
   </style>
 </head>
 <body>
@@ -105,16 +124,21 @@
     </div>
 
     <!-- OFFER / PRICE + TIMER -->
-    <div class="offer" id="offer">
+    <div class="offer" id="offer" aria-live="polite">
       <div class="price">
         <span class="price-old" id="price-old">17,00 €</span>
         <span class="price-new" id="price-new">8,90 €</span>
         <span class="badge" id="badge">−48%</span>
       </div>
+
       <div class="timer" id="timer">
         ⏳ <span id="timeleft">48:00:00</span>
         <small>до конца акции</small>
       </div>
+
+      <!-- CHANGES: компактная подсказка об окончании + промокод -->
+      <div class="offer-status" id="offer-status" style="display:none">⏰ Акция завершена</div>
+      <div class="offer-note" id="offer-note">Есть <strong>промокоды</strong> — попробуйте <code>GPT-20</code> на следующем шаге.</div>
     </div>
 
     <h2>Что вы узнаете:</h2>
@@ -138,7 +162,8 @@
       </a>
     </div>
 
-    <div class="promo-hint" id="promo-hint" style="display:none;">
+    <!-- старый нижний хинт скрыт стилями -->
+    <div class="promo-hint" id="promo-hint">
       Акция завершена 🎉 Но у нас есть дополнительные <strong>промокоды</strong> — попробуйте ввести <code>GPT-20</code> на следующем шаге.
     </div>
   </div>
@@ -161,7 +186,12 @@
         }
       },6000);
     });
-    function unmuteVideo(){ const v=document.getElementById('course-video'); const b=document.getElementById('unmute-btn'); if(v){v.muted=false; v.play();} if(b) b.style.display='none'; }
+    function unmuteVideo(){
+      const v=document.getElementById('course-video');
+      const b=document.getElementById('unmute-btn');
+      if(v){v.muted=false; v.play();}
+      if(b) b.style.display='none';
+    }
 
     // --- Countdown ---
     (function(){
@@ -180,6 +210,10 @@
       const $cta=document.getElementById('cta-btn');
       const $hint=document.getElementById('promo-hint');
 
+      // CHANGES: новые элементы
+      const $status=document.getElementById('offer-status');
+      const $note=document.getElementById('offer-note');
+
       let expiredSent=false;
       function pad(n){return n<10?('0'+n):n;}
       function render(){
@@ -189,12 +223,24 @@
             fbq('trackCustom','Offer_Expired_ai5');
             expiredSent=true;
           }
-          if($timerWrap) $timerWrap.innerHTML='⏰ Акция завершена';
-          if($old) {$old.style.display='inline'; $old.textContent='8,90 €';}
-          if($new) {$new.textContent='14,90 €';}
+          // компактный вид: убираем таймер, показываем статус и маленькую подсказку
+          if($timerWrap) $timerWrap.style.display='none';
+          if($status) $status.style.display='flex';
+          if($note) $note.style.display='block';
+
+          // инверсия цен
+          if($old){ $old.style.display='inline'; $old.textContent='8,90 €';}
+          if($new){ $new.textContent='14,90 €';}
           if($badge) $badge.style.display='none';
-          if($cta){ $cta.href='https://buy.stripe.com/bJe8wO0TG4L57C67Of6Na08'; $cta.textContent='Получить доступ за 14,90 €'; }
-          if($hint) $hint.style.display='block';
+
+          // новая ссылка + текст CTA
+          if($cta){
+            $cta.href='https://buy.stripe.com/bJe8wO0TG4L57C67Of6Na08';
+            $cta.textContent='Получить доступ за 14,90 €';
+          }
+
+          // на всякий случай скрываем старый нижний хинт
+          if($hint) $hint.style.display='none';
           return;
         }
         const s=Math.floor(diff/1000);
