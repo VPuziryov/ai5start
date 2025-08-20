@@ -176,6 +176,7 @@
     <!-- OFFER / PRICE + TIMER -->
     <div class="offer" id="offer">
       <div class="price">
+        <!-- Во время акции показываем 14,90 -> 8,90 (−40%) -->
         <span class="price-old" id="price-old">14,90 €</span>
         <span class="price-new" id="price-new">8,90 €</span>
         <span class="badge" id="badge">−40%</span>
@@ -202,6 +203,7 @@
     </div>
 
     <div class="cta">
+      <!-- По умолчанию (акция активна) ведём на 8,90 € -->
       <a id="cta-btn" href="https://buy.stripe.com/14A3cubyk3H17C67Of6Na07" onclick="fbq('trackCustom','Checkout_ai5')">
         Получить доступ за 8,90&nbsp;€
       </a>
@@ -245,8 +247,8 @@
     // --- Countdown (48h per user) ---
     (function(){
       const KEY='ai5_offer_deadline_v1';
-      const HOURS=48;
-      const ALT_LINK_AFTER_EXPIRY = "https://buy.stripe.com/bJe8wO0TG4L57C67Of6Na08";
+      const HOURS=48; // длительность акции для пользователя
+      const ALT_LINK_AFTER_EXPIRY = "https://buy.stripe.com/bJe8wO0TG4L57C67Of6Na08"; // линк на 14,90 €
       const BASE_PRICE_LABEL = 'Получить доступ за 14,90 €';
 
       const now = Date.now();
@@ -275,14 +277,37 @@
             sessionStorage.setItem('Offer_Expired_ai5_sent','1');
             expiredSent = true;
           }
+          // заголовок таймера
           if($timerWrap){ $timerWrap.innerHTML = '⏰ Акция завершена'; }
-          if($old) $old.style.display='none';
-          if($badge) $badge.style.display='none';
-          if(ALT_LINK_AFTER_EXPIRY && $cta){
-            $cta.href = ALT_LINK_AFTER_EXPIRY;
-            $cta.textContent = 'Получить доступ за 14,90 €';
-          }else if($cta){
+
+          // 🔄 Инверсия цен: показать, что 8,90 € — это старая акционная
+          if($old){
+            $old.style.display='inline';
+            $old.textContent = '8,90 €';     // зачёркнутая старая акция
+          }
+          if($new){
+            $new.textContent = '14,90 €';    // актуальная цена
+          }
+          if($badge){
+            $badge.style.display='inline';
+            $badge.textContent = 'обычная цена';
+            $badge.style.background = '#888';
+          }
+
+          // смена ссылки и текста кнопки
+          if($cta){
+            $cta.href = ALT_LINK_AFTER_EXPIRY || $cta.href;
             $cta.textContent = BASE_PRICE_LABEL;
+          }
+
+          // небольшой «триггер» про промокоды
+          const promo = document.createElement('p');
+          promo.style.marginTop = "10px";
+          promo.style.color = "#444";
+          promo.style.fontSize = "0.95rem";
+          promo.innerHTML = "Но у нас есть 🎟️ <strong>дополнительные промокоды</strong> — попробуйте их на следующем шаге!";
+          if($cta && $cta.parentNode){
+            $cta.parentNode.appendChild(promo);
           }
           return;
         }
