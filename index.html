@@ -176,8 +176,8 @@
     <!-- OFFER / PRICE + TIMER -->
     <div class="offer" id="offer">
       <div class="price">
-        <span class="price-old" id="price-old">17,00 €</span>
-        <span class="price-new" id="price-new">8,90 €</span>
+        <span class="price-old" id="price-old">17,00 €</span>
+        <span class="price-new" id="price-new">8,90 €</span>
         <span class="badge" id="badge">−48%</span>
       </div>
       <div class="timer" id="timer">
@@ -202,7 +202,7 @@
     </div>
 
     <div class="cta">
-      <a id="cta-btn" href="https://puziryov.com/use/bye-ai5-course/" onclick="fbq('trackCustom','Checkout_ai5')">
+      <a id="cta-btn" href="https://buy.stripe.com/14A3cubyk3H17C67Of6Na07" onclick="fbq('trackCustom','Checkout_ai5')">
         Получить доступ за 8,90&nbsp;€
       </a>
     </div>
@@ -219,10 +219,8 @@
       const video = document.getElementById('course-video');
       const btn = document.getElementById('unmute-btn');
 
-      // показать кнопку включения звука через 3с
       setTimeout(function(){ if(btn) btn.style.display='block'; },3000);
 
-      // попытка автоплея через 6с
       setTimeout(function(){
         if (video && video.paused) {
           const p = video.play();
@@ -247,9 +245,9 @@
     // --- Countdown (48h per user) ---
     (function(){
       const KEY='ai5_offer_deadline_v1';
-      const HOURS=48; // длительность акции для пользователя
-      const ALT_LINK_AFTER_EXPIRY = null; // <- вставь сюда линк Stripe с базовой ценой, когда будет готов
-      const BASE_PRICE_LABEL = 'Получить доступ'; // подпись после истечения, если новый линк не задан
+      const HOURS=48;
+      const ALT_LINK_AFTER_EXPIRY = "https://buy.stripe.com/bJe8wO0TG4L57C67Of6Na08";
+      const BASE_PRICE_LABEL = 'Получить доступ за 14,90 €';
 
       const now = Date.now();
       let deadline = localStorage.getItem(KEY);
@@ -277,11 +275,9 @@
             sessionStorage.setItem('Offer_Expired_ai5_sent','1');
             expiredSent = true;
           }
-          // визуально завершаем акцию
           if($timerWrap){ $timerWrap.innerHTML = '⏰ Акция завершена'; }
           if($old) $old.style.display='none';
           if($badge) $badge.style.display='none';
-          // при желании меняем текст/ссылку
           if(ALT_LINK_AFTER_EXPIRY && $cta){
             $cta.href = ALT_LINK_AFTER_EXPIRY;
             $cta.textContent = 'Получить доступ за 14,90 €';
@@ -297,7 +293,6 @@
         if($timer) $timer.textContent = `${hh}:${mm}:${ss}`;
       }
 
-      // не дублируем событие в сессии
       if(sessionStorage.getItem('Offer_Expired_ai5_sent')) expiredSent = true;
 
       render();
