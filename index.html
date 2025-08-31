@@ -27,93 +27,58 @@
 
   <style>
     :root{
-      --blue:#3aa0d1;
-      --blue-dark:#2a8ab7;
-      --bg:#f4f4f4;
-      --text:#222;
+      --cta:#ff6600;
+      --cta-hover:#e25500;
+      --mini-bg:#fff7cc;
+      --mini-bd:#ffe58f;
     }
-    *{box-sizing:border-box}
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    .container {
-      max-width: 720px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    }
-    h1 { font-size: 1.8rem; margin-bottom: 0.5em; }
-    .subtitle { font-size: 1.1rem; color: #555; margin-bottom: 1.5em; }
-    .video-wrapper { margin: 20px 0; text-align: center; position: relative; }
-    video { width: 100%; height: auto; border-radius: 12px; }
-    #unmute-btn {
-      position: absolute; bottom: 20px; right: 20px; z-index: 10;
-      background: rgba(0,0,0,0.7); color: #fff; border: none; border-radius: 6px;
-      padding: 10px 14px; font-size: 0.9rem; cursor: pointer; display: none;
-    }
-    ul { padding-left: 1.2em; }
-    li { margin-bottom: 0.7em; }
-
-    .offer{
-      margin-top:24px; background:#e7f7ff; border:1px solid #d1eefc;
-      border-radius:12px; padding:18px; display:flex; align-items:center;
-      gap:18px; flex-wrap:wrap;
-    }
-    .price{ display:flex; align-items:baseline; gap:10px; }
-    .price-old{ color:#888; text-decoration:line-through; font-size:1.1rem; }
-    .price-new{ color:#0b6ea8; font-weight:700; font-size:1.6rem;
-      background:#ffffffb3; padding:4px 10px; border-radius:8px; }
-    .badge{ background:#0bbf77; color:#fff; font-weight:600; padding:4px 10px;
-      border-radius:999px; font-size:0.9rem; }
-    .timer{
-      margin-left:auto; font-variant-numeric:tabular-nums; font-weight:700;
-      color:#0b6ea8; display:flex; align-items:center; gap:8px;
-    }
+    body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f4f4f4;color:#222}
+    .container{max-width:720px;margin:40px auto;background:#fff;padding:24px 20px 30px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.08)}
+    h1{font-size:1.8rem;margin:0 0 .5em}
+    .subtitle{font-size:1.05rem;color:#555;margin-bottom:.9em}
+    .mini-value{display:flex;align-items:center;gap:10px;background:var(--mini-bg);border:1px solid var(--mini-bd);border-radius:10px;padding:10px 12px;font-size:.98rem;margin:10px 0}
+    .cta{text-align:center}
+    .cta .cta-btn{background:var(--cta);color:#fff;text-decoration:none;padding:14px 22px;border-radius:10px;font-size:1.02rem;display:inline-block;transition:background .2s,transform .05s;box-shadow:0 6px 14px rgba(255,102,0,0.25)}
+    .cta .cta-btn:hover{background:var(--cta-hover)}
+    .cta .cta-btn:active{transform:translateY(1px)}
+    .trust{margin-top:10px;display:flex;align-items:center;gap:12px;border:1px solid #eee;border-radius:12px;padding:10px 12px}
+    .trust img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+    .trust .who{font-size:.95rem;line-height:1.2}
+    .trust .who small{color:#666;display:block;font-size:.9rem}
+    .trust .secure{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:.92rem;color:#2b6c2b;white-space:nowrap}
+    .video-wrapper{margin:16px 0 8px;text-align:center;position:relative}
+    video{width:100%;border-radius:12px}
+    #unmute-btn{position:absolute;bottom:20px;right:20px;z-index:10;background:rgba(0,0,0,0.7);color:#fff;border:none;border-radius:6px;padding:10px 14px;font-size:.9rem;cursor:pointer;display:none}
+    .offer{margin-top:18px;background:#e7f7ff;border:1px solid #d1eefc;border-radius:12px;padding:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .price{display:flex;align-items:baseline;gap:10px}
+    .price-old{color:#888;text-decoration:line-through;font-size:1.05rem}
+    .price-new{color:#0b6ea8;font-weight:700;font-size:1.45rem;background:#ffffffb3;padding:4px 10px;border-radius:8px}
+    .badge{background:#0bbf77;color:#fff;font-weight:600;padding:4px 10px;border-radius:999px;font-size:.9rem}
+    .timer{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:700;color:#0b6ea8;display:flex;align-items:center;gap:8px}
     .timer small{display:block;color:#2f6f8e;font-weight:500}
-    .cta { margin-top: 18px; text-align: center; }
-    .cta a {
-      background: var(--blue); color: #fff; text-decoration: none;
-      padding: 14px 28px; border-radius: 8px; font-size: 1rem;
-      display: inline-block; transition: background .3s, transform .05s;
-    }
-    .cta a:hover { background: var(--blue-dark); }
-    .cta a:active { transform: translateY(1px); }
-
-    .bonus {
-      background: #eefbf4; border-left: 4px solid #0bbf77; padding: 16px;
-      margin-top: 1.5em; border-radius: 12px;
-    }
-
-    /* CHANGES: компактная строка статуса + микро-подсказка */
-    .offer-status{
-      display:flex; align-items:center; gap:8px; margin-left:auto;
-      color:#2f6f8e; font-weight:600; font-size:.95rem;
-    }
-    .offer-note{
-      width:100%;
-      font-size:.9rem; color:#3b6477;
-      display:none;
-    }
-    .offer-note code{
-      background:#fff; border:1px dashed #b6dbee; padding:2px 6px; border-radius:6px;
-      font-size:.85rem;
-    }
-
-    /* старый нижний блок больше не нужен, но оставим на всякий случай */
-    .promo-hint { display:none; }
+    .bonus{background:#eefbf4;border-left:4px solid #0bbf77;padding:16px;margin-top:1.2em;border-radius:12px}
+    .offer-status{display:flex;align-items:center;gap:8px;margin-left:auto;color:#2f6f8e;font-weight:600;font-size:.95rem}
+    .offer-note{width:100%;font-size:.9rem;color:#3b6477;display:none}
+    .offer-note code{background:#fff;border:1px dashed #b6dbee;padding:2px 6px;border-radius:6px;font-size:.85rem}
+    .cta.secondary{margin-top:10px}
+    .promo-hint{display:none}
+    @media(max-width:560px){.container{margin:16px auto;padding:18px 14px 22px}h1{font-size:1.45rem}.cta .cta-btn{width:100%}}
   </style>
 </head>
 <body>
   <div class="container">
     <h1>GPT в деле: как запустить ИИ-ассистента и заработать на нём</h1>
-    <div class="subtitle">
-      Мини-курс для тех, кто хочет меньше рутинить, больше зарабатывать — и начать применять ИИ в своём бизнесе уже завтра.
+    <div class="subtitle">Мини-курс для тех, кто хочет меньше рутинить, больше зарабатывать — и начать применять ИИ в своём бизнесе уже завтра.</div>
+
+    <div class="mini-value">💡 6 уроков, бонусы и чат поддержки → всё за вечер, всего <strong><span id="mini-price">8,90 €</span></strong></div>
+
+    <div class="cta">
+      <a class="cta-btn js-cta" href="https://buy.stripe.com/14A3cubyk3H17C67Of6Na07" onclick="fbq('trackCustom','Checkout_ai5')">Забрать доступ за 8,90&nbsp;€</a>
+    </div>
+    <div class="trust">
+      <img src="thumb1.jpg" alt="Виталий Пузырёв"/>
+      <div class="who">Автор курса — <strong>Виталий Пузырёв</strong><small>таргетолог и инструктор по GPT</small></div>
+      <div class="secure">💳 Оплата через Stripe</div>
     </div>
 
     <div class="video-wrapper">
@@ -123,20 +88,17 @@
       <button id="unmute-btn" onclick="unmuteVideo()">🔊 Включить звук</button>
     </div>
 
-    <!-- OFFER / PRICE + TIMER -->
-    <div class="offer" id="offer" aria-live="polite">
+    <div class="cta secondary">
+      <a class="cta-btn js-cta" href="https://buy.stripe.com/14A3cubyk3H17C67Of6Na07" onclick="fbq('trackCustom','Checkout_ai5')">Забрать доступ за 8,90&nbsp;€</a>
+    </div>
+
+    <div class="offer" id="offer">
       <div class="price">
-        <span class="price-old" id="price-old">17,00 €</span>
+        <span class="price-old" id="price-old">14,90 €</span>
         <span class="price-new" id="price-new">8,90 €</span>
-        <span class="badge" id="badge">−48%</span>
+        <span class="badge" id="badge">−40%</span>
       </div>
-
-      <div class="timer" id="timer">
-        ⏳ <span id="timeleft">48:00:00</span>
-        <small>до конца акции</small>
-      </div>
-
-      <!-- CHANGES: компактная подсказка об окончании + промокод -->
+      <div class="timer" id="timer">⏳ <span id="timeleft">48:00:00</span><small>до конца акции</small></div>
       <div class="offer-status" id="offer-status" style="display:none">⏰ Акция завершена</div>
       <div class="offer-note" id="offer-note">Есть <strong>промокоды</strong> — попробуйте <code>GPT20</code> на следующем шаге.</div>
     </div>
@@ -150,106 +112,67 @@
 
     <div class="bonus">
       <strong>🎁 Бонусы:</strong>
-      <ul>
-        <li>🧭 Ассистент «Обогатитель» для запуска микробизнеса</li>
-        <li>📥 PDF «5 воронок в законе»</li>
-      </ul>
+      <ul><li>🧭 Ассистент «Обогатитель» для запуска микробизнеса</li><li>📥 PDF «5 воронок в законе»</li></ul>
     </div>
 
-    <div class="cta">
-      <a id="cta-btn" href="https://buy.stripe.com/14A3cubyk3H17C67Of6Na07" onclick="fbq('trackCustom','Checkout_ai5')">
-        Получить доступ за 8,90&nbsp;€
-      </a>
-    </div>
-
-    <!-- старый нижний хинт скрыт стилями -->
-    <div class="promo-hint" id="promo-hint">
-      Акция завершена 🎉 Но у нас есть дополнительные <strong>промокоды</strong> — попробуйте ввести <code>GPT-20</code> на следующем шаге.
-    </div>
+    <div class="promo-hint" id="promo-hint">Акция завершена 🎉 Но у нас есть дополнительные <strong>промокоды</strong> — попробуйте ввести <code>GPT-20</code> на следующем шаге.</div>
   </div>
 
   <script>
-    // --- 7s ViewContent marker ---
-    setTimeout(function(){
-      fbq('trackCustom','ViewContent_ai5_7s');
-    },7000);
+    setTimeout(()=>{fbq('trackCustom','ViewContent_ai5_7s')},7000);
 
-    // --- Video helpers ---
-    window.addEventListener('load', function () {
-      const video = document.getElementById('course-video');
-      const btn = document.getElementById('unmute-btn');
-      setTimeout(()=>{ if(btn) btn.style.display='block'; },3000);
+    window.addEventListener('load',()=>{
+      const v=document.getElementById('course-video'),b=document.getElementById('unmute-btn');
+      setTimeout(()=>{if(b)b.style.display='block'},3000);
       setTimeout(()=>{
-        if (video && video.paused) { video.play().catch(()=>{}); }
-        if (video) {
-          video.addEventListener('volumechange', ()=>{ if (!video.muted && btn) btn.style.display='none'; });
-        }
+        if(v&&v.paused){v.play().catch(()=>{})}
+        if(v){v.addEventListener('volumechange',()=>{if(!v.muted&&b)b.style.display='none'})}
       },6000);
     });
-    function unmuteVideo(){
-      const v=document.getElementById('course-video');
-      const b=document.getElementById('unmute-btn');
-      if(v){v.muted=false; v.play();}
-      if(b) b.style.display='none';
-    }
+    function unmuteVideo(){const v=document.getElementById('course-video'),b=document.getElementById('unmute-btn');if(v){v.muted=false;v.play()}if(b)b.style.display='none'}
 
-    // --- Countdown ---
     (function(){
-      const KEY='ai5_offer_deadline_v1';
-      const HOURS=48;
-      const now = Date.now();
-      let deadline = localStorage.getItem(KEY);
-      if(!deadline){ deadline = (now + HOURS*60*60*1000).toString(); localStorage.setItem(KEY, deadline); }
-      deadline = parseInt(deadline,10);
+      const KEY='ai5_offer_deadline_v1',HOURS=48;
+      let deadline=localStorage.getItem(KEY);if(!deadline){deadline=(Date.now()+HOURS*3600*1000).toString();localStorage.setItem(KEY,deadline)}
+      deadline=parseInt(deadline,10);
 
-      const $timer=document.getElementById('timeleft');
-      const $timerWrap=document.getElementById('timer');
-      const $old=document.getElementById('price-old');
-      const $new=document.getElementById('price-new');
-      const $badge=document.getElementById('badge');
-      const $cta=document.getElementById('cta-btn');
-      const $hint=document.getElementById('promo-hint');
-
-      // CHANGES: новые элементы
-      const $status=document.getElementById('offer-status');
-      const $note=document.getElementById('offer-note');
-
+      const $timer=document.getElementById('timeleft'),$timerWrap=document.getElementById('timer'),
+        $old=document.getElementById('price-old'),$new=document.getElementById('price-new'),
+        $badge=document.getElementById('badge'),$ctas=[...document.querySelectorAll('.js-cta')],
+        $hint=document.getElementById('promo-hint'),$status=document.getElementById('offer-status'),
+        $note=document.getElementById('offer-note'),$mini=document.getElementById('mini-price');
       let expiredSent=false;
-      function pad(n){return n<10?('0'+n):n;}
+      function pad(n){return n<10?'0'+n:n}
+      function setPreSale(){
+        if($old){$old.textContent='14,90 €';$old.style.display='inline'}
+        if($new)$new.textContent='8,90 €'
+        if($badge){$badge.style.display='inline-block';$badge.textContent='−40%'}
+        if($timerWrap)$timerWrap.style.display='flex'
+        if($status)$status.style.display='none'
+        if($note)$note.style.display='none'
+        if($mini)$mini.textContent='8,90 €'
+        $ctas.forEach(a=>{a.href='https://buy.stripe.com/14A3cubyk3H17C67Of6Na07';a.textContent='Забрать доступ за 8,90 €'})
+      }
+      function setExpired(){
+        if(!expiredSent){fbq('trackCustom','Offer_Expired_ai5');expiredSent=true}
+        if($timerWrap)$timerWrap.style.display='none'
+        if($status)$status.style.display='flex'
+        if($note)$note.style.display='block'
+        if($old){$old.textContent='8,90 €';$old.style.display='inline'}
+        if($new)$new.textContent='14,90 €'
+        if($badge)$badge.style.display='none'
+        if($mini)$mini.textContent='14,90 €'
+        $ctas.forEach(a=>{a.href='https://buy.stripe.com/bJe8wO0TG4L57C67Of6Na08';a.textContent='Получить доступ за 14,90 €'})
+        if($hint)$hint.style.display='none'
+      }
       function render(){
         const diff=deadline-Date.now();
-        if(diff<=0){
-          if(!expiredSent){
-            fbq('trackCustom','Offer_Expired_ai5');
-            expiredSent=true;
-          }
-          // компактный вид: убираем таймер, показываем статус и маленькую подсказку
-          if($timerWrap) $timerWrap.style.display='none';
-          if($status) $status.style.display='flex';
-          if($note) $note.style.display='block';
-
-          // инверсия цен
-          if($old){ $old.style.display='inline'; $old.textContent='8,90 €';}
-          if($new){ $new.textContent='14,90 €';}
-          if($badge) $badge.style.display='none';
-
-          // новая ссылка + текст CTA
-          if($cta){
-            $cta.href='https://buy.stripe.com/bJe8wO0TG4L57C67Of6Na08';
-            $cta.textContent='Получить доступ за 14,90 €';
-          }
-
-          // на всякий случай скрываем старый нижний хинт
-          if($hint) $hint.style.display='none';
-          return;
-        }
-        const s=Math.floor(diff/1000);
-        const hh=pad(Math.floor(s/3600));
-        const mm=pad(Math.floor((s%3600)/60));
-        const ss=pad(s%60);
-        if($timer) $timer.textContent=`${hh}:${mm}:${ss}`;
+        if(diff<=0){setExpired();return}
+        setPreSale();
+        const s=Math.floor(diff/1000),hh=pad(Math.floor(s/3600)),mm=pad(Math.floor((s%3600)/60)),ss=pad(s%60);
+        if($timer)$timer.textContent=`${hh}:${mm}:${ss}`
       }
-      render(); setInterval(render,1000);
+      render();setInterval(render,1000);
     })();
   </script>
 </body>
