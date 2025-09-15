@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ffffff">
   <title>GPT в деле: мини-курс</title>
 
-  <!-- Facebook Pixel (как было) -->
+  <!-- Facebook Pixel -->
   <script>
     !function(f,b,e,v,n,t,s){
       if(f.fbq)return;n=f.fbq=function(){n.callMethod ?
@@ -91,11 +91,7 @@
     .trust .secure{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:.92rem;color:#2b6c2b;white-space:nowrap}
 
     .video-wrapper{margin:16px 0 8px;position:relative}
-    video{
-      width:100%;border-radius:12px;background:#000;
-      /* для iOS inline-воспроизведения */
-    }
-    /* Крупная накладка Play при запрете автоплея */
+    video{width:100%;border-radius:12px;background:#000}
     .play-overlay{
       position:absolute;inset:0;display:none;align-items:center;justify-content:center;
       background:linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,.35));
@@ -238,7 +234,7 @@
   </div>
 
   <script>
-    // ViewContent 7s (как было)
+    // ViewContent 7s
     setTimeout(()=>{fbq('trackCustom','ViewContent_ai5_7s')},7000);
 
     // -------------- Надёжный запуск видео на всех устройствах
@@ -264,18 +260,15 @@
         if (video.getAttribute('poster')) video.removeAttribute('poster');
       }
       function restorePoster(){
-        // Опционально можно вернуть постер при паузе
         // video.setAttribute('poster','Course%20cover%20pix.png');
       }
 
       // Обработчики состояния
       video.addEventListener('playing', ()=>{
-        // когда реально идёт воспроизведение — показываем кнопку «включить звук»
         if (unmuteBtn && video.muted) unmuteBtn.style.display='block';
         hideOverlay(); removePoster();
       });
       video.addEventListener('pause', ()=>{
-        // если пользователь поставил на паузу — прячем «unmute», можем показать overlay
         if (unmuteBtn) unmuteBtn.style.display='none';
         showOverlay(); restorePoster();
       });
@@ -284,47 +277,49 @@
         showOverlay();
       });
 
-      // Большая кнопка Play (жест пользователя) — гарантированный старт
+      // Большая кнопка Play — гарантированный старт
       playBtn.addEventListener('click', async ()=>{
         hideOverlay();
         try{
           await video.play();
-          // если был выключен звук — предлагаем включить
           if(video.muted && unmuteBtn) unmuteBtn.style.display='block';
         }catch(e){
-          showOverlay(); // всё ещё запрещено — оставляем накладку
+          showOverlay();
         }
       });
 
-      // Кнопка «Включить звук»
+      // --- FIX #1: рабочий размьют + (опционально) рестарт к началу при первом размьюте
+      let firstUnmute = true;
       window.unmuteVideo = function(){
         video.muted = false;
+        if (firstUnmute) {
+          try { video.currentTime = 0; } catch(e){}
+          firstUnmute = false;
+        }
         video.play().catch(()=>{});
         if(unmuteBtn) unmuteBtn.style.display='none';
-      }
+      };
+      // привязка кнопки к функции (ключевое исправление)
+      if (unmuteBtn) unmuteBtn.addEventListener('click', window.unmuteVideo);
 
-      // Автозапуск через 3 сек, но уважаем Reduce Motion
+      // Автозапуск через 3 сек (если можно), иначе показ оверлея
       window.addEventListener('load', ()=>{
         setTimeout(async ()=>{
           if (prefersReduced){
-            // пользователь против авто анимаций — показываем overlay сразу
             showOverlay();
             return;
           }
-          // Пытаемся автозапустить (iOS/Android/desktop): должно быть muted + playsinline
           try{
             await video.play();
-            // показать кнопку размьюта
             if(unmuteBtn && video.muted) unmuteBtn.style.display='block';
             hideOverlay(); removePoster();
           }catch(e){
-            // авто не дался — показываем накладку Play
             showOverlay();
           }
         }, 3000);
       });
 
-      // Фикс на свайп/тап по самому видео — тоже даёт user gesture
+      // Тап по самому видео — тоже жест пользователя
       video.addEventListener('click', async ()=>{
         if (video.paused){
           try{
@@ -335,7 +330,7 @@
       }, {passive:true});
     })();
 
-    // -------------- Таймер/цены/CTA (как договаривались)
+    // -------------- Таймер/цены/CTA
     (function(){
       const KEY='ai5_offer_deadline_v1',HOURS=48;
       let deadline;
@@ -347,15 +342,14 @@
           localStorage.setItem(KEY,String(deadline));
         }
       }catch(e){
-        // Private mode / запрет localStorage — используем volatile-память
         if(!window.__ai5_deadline){
           window.__ai5_deadline = Date.now()+HOURS*3600*1000;
         }
         deadline = window.__ai5_deadline;
       }
 
-      const $timer=document.getElementById('timeleft'),
-            $timerWrap=document.getElementById('timer'),
+      const $timerWrap=document.getElementById('timer'),
+            $timeleft=document.getElementById('timeleft'),
             $old=document.getElementById('price-old'),
             $new=document.getElementById('price-new'),
             $badge=document.getElementById('badge'),
@@ -408,7 +402,7 @@
               hh=pad(Math.floor(s/3600)),
               mm=pad(Math.floor((s%3600)/60)),
               ss=pad(s%60);
-        if($timer)$timer.textContent=`${hh}:${mm}:${ss}`
+        if($timeleft) $timeleft.textContent=`${hh}:${mm}:${ss}`;
       }
       render(); setInterval(render,1000);
     })();
