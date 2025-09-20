@@ -16,18 +16,13 @@
       t.src=v;s=b.getElementsByTagName(e)[0];
       s.parentNode.insertBefore(t,s)
     }(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-
     fbq('init','3153750001397422');
 
     // PageView — сразу
     (function(){
-      if(!window.__pvSent){
-        try{ fbq('track','PageView'); window.__pvSent = true; }catch(e){}
-      }
+      if(!window.__pvSent){ try{ fbq('track','PageView'); window.__pvSent = true; }catch(e){} }
       window.addEventListener('load', function(){
-        if(!window.__pvSent){
-          try{ fbq('track','PageView'); window.__pvSent = true; }catch(e){}
-        }
+        if(!window.__pvSent){ try{ fbq('track','PageView'); window.__pvSent = true; }catch(e){} }
       }, {once:true});
     })();
   </script>
@@ -51,8 +46,16 @@
 
     .hero{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
     .hero-text{flex:1 1 360px}
-    .hero-photo{flex:1 1 320px;text-align:center}
-    .hero-photo img{max-width:100%;border-radius:12px}
+    .hero-photo{flex:1 1 320px}
+    /* КРОП ФОТО на мобиле, чтобы убрать «белую пустоту» снизу картинки */
+    .hero-photo .crop{border-radius:12px;overflow:hidden;}
+    .hero-photo .crop img{width:100%;height:auto;display:block}
+    @media (max-width:560px){
+      .hero{flex-direction:column}
+      /* фиксированный видимый кадр: обрезаем лишнее дно у исходного изображения */
+      .hero-photo .crop{aspect-ratio:16/9}
+      .hero-photo .crop img{width:100%;height:100%;object-fit:cover;object-position:center}
+    }
 
     ul{margin:.3em 0 0 0;padding-left:1.2em}
     li{margin:.35em 0}
@@ -82,7 +85,6 @@
     @media (max-width:560px){
       .container{margin:14px auto;padding:18px 14px 22px}
       h1{font-size:1.55rem}
-      .hero{flex-direction:column}
       .cta{text-align:center}
       .trust .pay img{height:16px}
     }
@@ -117,7 +119,9 @@
       </div>
 
       <div class="hero-photo">
-        <img src="thumb1.jpg" alt="Виталий Пузырёв указывает на ключевые пункты">
+        <div class="crop">
+          <img src="thumb1.jpg" alt="Виталий Пузырёв указывает на ключевые пункты">
+        </div>
       </div>
     </section>
 
@@ -142,10 +146,8 @@
     // ViewContent_ai5_7s — считаем только активное пребывание на вкладке
     (function () {
       let t=null, spent=0, last=Date.now();
-      function tick(){
-        const now=Date.now(); spent += (now-last); last=now;
-        if(spent>=7000){ clearInterval(t); try{ fbq('trackCustom','ViewContent_ai5_7s'); }catch(e){} }
-      }
+      function tick(){ const now=Date.now(); spent += (now-last); last=now;
+        if(spent>=7000){ clearInterval(t); try{ fbq('trackCustom','ViewContent_ai5_7s'); }catch(e){} } }
       function start(){ last=Date.now(); t=setInterval(tick,250); }
       function stop(){ if(t){ clearInterval(t); t=null; } }
       document.addEventListener('visibilitychange',()=>{ document.hidden?stop():start(); });
