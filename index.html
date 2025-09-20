@@ -58,6 +58,7 @@
     .cta .btn:hover{background:var(--cta-hover)}
     .cta .btn:active{transform:translateY(1px)}
     .cta small{display:block;color:var(--muted);margin-top:8px}
+    .cta .guarantee{color:#2b6c2b;font-size:.9rem;margin-top:6px}
 
     .hero-photo{margin-top:16px;text-align:center}
     .hero-photo img{max-width:100%;border-radius:12px;display:block;margin:0 auto}
@@ -71,6 +72,18 @@
     .trust .pay .label{flex:0 0 100%}
     .trust .pay .icons{display:flex;gap:10px;flex-wrap:wrap}
     .trust .pay img{height:18px;max-width:60px}
+
+    /* Липкая кнопка на мобильных */
+    @media (max-width:560px){
+      .sticky-cta{
+        position:fixed;bottom:0;left:0;right:0;
+        background:#fff;padding:10px;border-top:1px solid var(--bd);
+        box-shadow:0 -4px 12px rgba(0,0,0,0.1);
+        text-align:center;z-index:1000
+      }
+      .sticky-cta .btn{width:100%}
+      body{padding-bottom:80px} /* чтобы контент не уходил под кнопку */
+    }
   </style>
 </head>
 <body>
@@ -95,7 +108,8 @@
     <div class="cta">
       <a class="btn js-cta" href="https://buy.stripe.com/14A3cubyk3H17C67Of6Na07"
          aria-label="Получить доступ за 8,90 евро">Получить доступ за 8,90&nbsp;€</a>
-      <small>Если не зайдёт — верну деньги в течение 24 часов.</small>
+      <small>Если не зайдёт — вернём деньги в течение 24 часов.</small>
+      <div class="guarantee">✅ Оплата защищена • Отмена одним кликом</div>
     </div>
 
     <div class="hero-photo">
@@ -103,7 +117,7 @@
     </div>
 
     <section class="trust" aria-label="Блок доверия">
-      <div class="avatar"><img src="vp_face.png" alt="Виталий Пузырёв"></div>
+      <div class="avatar"><img src="thumb1.jpg" alt="Виталий Пузырёв"></div>
       <div class="who">Автор — <strong>Виталий Пузырёв</strong><small>таргетолог и инструктор по GPT</small></div>
       <div class="pay" aria-label="Способы оплаты">
         <span class="label">💳 Оплата:</span>
@@ -116,6 +130,12 @@
         </span>
       </div>
     </section>
+  </div>
+
+  <!-- Липкая кнопка на мобильных -->
+  <div class="sticky-cta">
+    <a class="btn js-cta" href="https://buy.stripe.com/14A3cubyk3H17C67Of6Na07"
+       aria-label="Получить доступ за 8,90 евро">Получить доступ за 8,90&nbsp;€</a>
   </div>
 
   <!-- События Meta Pixel -->
