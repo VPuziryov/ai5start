@@ -14,14 +14,21 @@
       if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
       n.queue=[];t=b.createElement(e);t.async=!0;
       t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s);
+      s.parentNode.insertBefore(t,s)
     }(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+
     fbq('init','3153750001397422');
-    // дубль PageView после полной загрузки — для надёжности
-    (function () {
-      function firePV(){ try{ fbq('track','PageView'); }catch(e){} }
-      if (document.readyState === 'complete') setTimeout(firePV,0);
-      else window.addEventListener('load', firePV, {once:true});
+
+    // PageView — сразу
+    (function(){
+      if(!window.__pvSent){
+        try{ fbq('track','PageView'); window.__pvSent = true; }catch(e){}
+      }
+      window.addEventListener('load', function(){
+        if(!window.__pvSent){
+          try{ fbq('track','PageView'); window.__pvSent = true; }catch(e){}
+        }
+      }, {once:true});
     })();
   </script>
   <noscript><img height="1" width="1" style="display:none"
@@ -63,19 +70,21 @@
     .cta small{display:block;color:var(--muted);margin-top:8px}
 
     .trust{margin-top:18px;display:flex;align-items:center;gap:12px;
-      border:1px solid var(--bd);border-radius:12px;padding:10px 12px;background:#fff}
+      border:1px solid var(--bd);border-radius:12px;padding:10px 12px;background:#fff;flex-wrap:wrap}
     .trust .avatar img{width:40px;height:40px;border-radius:50%;display:block}
     .trust .who{font-size:.95rem;line-height:1.2}
     .trust .who small{display:block;color:var(--muted)}
-    .trust .pay{margin-left:auto;display:flex;align-items:center;gap:10px;
-      font-size:.92rem;color:#2b6c2b;white-space:nowrap}
-    .trust .pay img{height:18px;display:block}
+    .trust .pay{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.92rem;color:#2b6c2b;margin-left:auto}
+    .trust .pay .label{flex:0 0 100%}
+    .trust .pay .icons{display:flex;gap:10px;flex-wrap:wrap}
+    .trust .pay img{height:18px;max-width:60px}
 
     @media (max-width:560px){
       .container{margin:14px auto;padding:18px 14px 22px}
       h1{font-size:1.55rem}
       .hero{flex-direction:column}
       .cta{text-align:center}
+      .trust .pay img{height:16px}
     }
   </style>
 </head>
@@ -116,12 +125,14 @@
       <div class="avatar"><img src="thumb1.jpg" alt="Виталий Пузырёв"></div>
       <div class="who">Автор — <strong>Виталий Пузырёв</strong><small>таргетолог и инструктор по GPT</small></div>
       <div class="pay" aria-label="Способы оплаты">
-        💳 Оплата:
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Mastercard-logo.png" alt="Mastercard">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg" alt="American Express">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Pay">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Pay">
+        <span class="label">💳 Оплата:</span>
+        <span class="icons">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Mastercard-logo.png" alt="Mastercard">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg" alt="American Express">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Pay">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Pay">
+        </span>
       </div>
     </section>
   </div>
@@ -141,14 +152,15 @@
       if(!document.hidden) start();
     })();
 
-    // InitiateCheckout + кастом Checkout_ai5 — перед редиректом
+    // InitiateCheckout + Checkout_ai5 — на клик по CTA
     (function () {
       document.querySelectorAll('.js-cta').forEach(a=>{
         a.addEventListener('click',function(e){
           e.preventDefault();
           const url=this.href;
-          try{ fbq('track','InitiateCheckout'); fbq('trackCustom','Checkout_ai5'); }catch(e){}
-          setTimeout(()=>{ window.location.href=url; }, 180);
+          try{ fbq('track','InitiateCheckout'); }catch(e){}
+          try{ fbq('trackCustom','Checkout_ai5'); }catch(e){}
+          setTimeout(()=>{ window.location.href=url; }, 150);
         }, {passive:false});
       });
     })();
